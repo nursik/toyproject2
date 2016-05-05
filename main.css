@@ -12,41 +12,48 @@ html, body {
     background-color: #DDC;
 }
 .container {
-    margin-top: 10px;
-    background-color: lightgreen;
+    width: 480px;
+    padding: 10px;
+    margin: 0 auto;
 }
 
 .btn {
     cursor: pointer;
-    width: 240px;
 }
 
-.score {
-    display: inline-block;
-    width: 100px;
+.current-score, .best-score {
+    margin-left: 20px;
+    float: right;
+}
+
+.btn, .current-score, .best-score {
     background-color: #bbada0;
     font-family: OswaldMedium;
     color: #EFF;
-    height: 16px;
-    font-size: 16px;
-    padding: 16px;
+    font-size: 18px;
+    padding: 16px 24px;
+    border-radius: 4px;
 }
 
-.score:not(:first-child) {
-    margin-left: 20px;
+.row:not(:last-child) {
+    margin-bottom: 20px;
 }
 
-.row {
-    margin: 0 auto;
-    width: 480px;
-    background-color: red;
+.row div{
+    display: inline-block;
 }
 .game-box {
     width: 480px;
     height: 480px;
+    border-radius: 4px;
     background-color: rosybrown;
 }
 
 .box {
-
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 16px -4px -4px 16px;
+    border-radius: 6px;
+    background-color: slategray;
 }
