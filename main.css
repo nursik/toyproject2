@@ -1,0 +1,52 @@
+@font-face {
+    font-family: OswaldRegular;
+    src: url(./fonts/oswald/Oswald-Regular.ttf)
+}
+@font-face {
+    font-family: OswaldMedium;
+    src: url(./fonts/oswald/Oswald-Medium.ttf)
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #DDC;
+}
+.container {
+    margin-top: 10px;
+    background-color: lightgreen;
+}
+
+.btn {
+    cursor: pointer;
+    width: 240px;
+}
+
+.score {
+    display: inline-block;
+    width: 100px;
+    background-color: #bbada0;
+    font-family: OswaldMedium;
+    color: #EFF;
+    height: 16px;
+    font-size: 16px;
+    padding: 16px;
+}
+
+.score:not(:first-child) {
+    margin-left: 20px;
+}
+
+.row {
+    margin: 0 auto;
+    width: 480px;
+    background-color: red;
+}
+.game-box {
+    width: 480px;
+    height: 480px;
+    background-color: rosybrown;
+}
+
+.box {
+
+}
