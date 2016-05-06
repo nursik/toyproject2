@@ -46,7 +46,7 @@ html, body {
     width: 480px;
     height: 480px;
     border-radius: 4px;
-    background-color: rosybrown;
+    background-color: #BBADA0;
 }
 
 .box {
@@ -55,5 +55,6 @@ html, body {
     height: 100px;
     margin: 16px -4px -4px 16px;
     border-radius: 6px;
-    background-color: slategray;
+    background-color: #CDC1B4;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
