@@ -4,7 +4,7 @@ function cl(text) {
     console.log(text);
 }
 
-function GameFabric() {
+function GameModelFabric() {
     var gameState;
     var score;
     var gameLost;
@@ -42,18 +42,23 @@ function GameFabric() {
             }                   
         }
     }
+    
     this.up = function up() {
         return this;
     }
+    
     this.down = function down() {
         return this;
     }
+    
     this.left = function left() {
         return this;
     }
+    
     this.right = function right() {
         return this;
     }
+    
     function _getRandomNumber() {
         var rd = 0.0;
         for (var i = 1; i < 5; i++) {
@@ -69,6 +74,7 @@ function GameFabric() {
         }
         return 2;
     }
+    
     this.addBlock = function addBlock() {
         var places = [];
         var n = this.gameState.length;
@@ -95,12 +101,37 @@ function GameFabric() {
         
         return this;
     }
+    
     this.isGameLost = function isGameLost() {
+        if (this.gameLost === false) {
+            var notLost = false;
+            outer: for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 3; j++) {
+                    if (this.gameState[i][j] === this.gameState[i][j + 1]) {
+                        notLost = true;
+                        break outer;
+                    }
+                }
+            }
+            outer: for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 4; j++) {
+                    if (this.gameState[i][j] === this.gameState[i + 1][j]) {
+                        notLost = true;
+                        break outer;
+                    }
+                }
+            }
+            if (notLost === false) {
+                this.gameLost = true;
+            }
+        }
         return this.gameLost;
     }
+    
     this.getGameState = function getGameState() {
         return this.gameState;
     }
+    
     this.print = function print() {
         for (var i = 0; i < this.gameState.length; i++) {
             var mes = "";
@@ -115,15 +146,45 @@ function GameFabric() {
             cl(mes);
         }
     }
-    return this;
 }
 
-function UIFabric() {
+function UIModelFabric() {
+    var gameBox;
+    var UITable;
+    var UIBlocked;
     
+    this.init = function init(gameBoxEl) {
+        this.gameBox = gameBoxEl;
+        this.UITable = [[null, null, null, null],
+                        [null, null, null, null],
+                        [null, null, null, null],
+                        [null, null, null, null]];
+        this.refreshUITable();
+        this.UIBlocked = false;
+        return this;
+    }
+    
+    this.refreshUITable = function refreshUITable() {
+        var boxes = this.gameBox.children;
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                this.UITable[i][j] = boxes[i*4+j].getClientRects()[0];
+            }
+        }
+        return this;
+    }
+    
+    this.g = function g() {
+        return this.UITable;
+    }
 }
 
-var GameModel = new GameFabric();
+var GameModel = new GameModelFabric();
+var UIModel;
+
 window.onload = function() {
+    UIModel = new UIModelFabric();
+    UIModel.init(document.getElementById("gameBox"));
     
 }
 
