@@ -28,15 +28,14 @@ function GameModelFabric() {
                             [null, null, null, null],
                             [null, null, null, null],
                             [null, null, null, null]];
-
-            var n = new_state.length;                         
-            for (var i = 0; i < n; i++) {
-                for (var j = 0; j < n; j++) {
-                    new_state[i][j] = gameState[n - j - 1][i];
+                       
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    new_state[i][j] = gameState[3 - j][i];
                 }
             }    
-            for (var i = 0; i < n; i++) {
-                for (var j = 0; j < n; j++) {
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
                     gameState[i][j] = new_state[i][j];
                 }
             }                   
@@ -77,17 +76,16 @@ function GameModelFabric() {
     
     this.addBlock = function addBlock() {
         var places = [];
-        var n = gameState.length;
         
-        for (var i = 0; i < n; i++) {
-            for (var j = 0; j < n; j++) {
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
                 if (gameState[i][j] === null) {
                     places.push([i, j]);
                 }
             }
         }
         
-        n = places.length;
+        var n = places.length;
         if (n === 0) {
             // no space for new block
             return this;
@@ -129,21 +127,26 @@ function GameModelFabric() {
     }
     
     this.getGameState = function getGameState() {
-        return gameState;
+        var copied = [];
+        for (var i = 0; i < 4; i++) {
+            copied.push(gameState[i].slice());
+        }
+        return copied;
     }
     
     this.print = function print() {
-        for (var i = 0; i < gameState.length; i++) {
+        for (var i = 0; i < 4; i++) {
             var mes = "";
-            for (var j = 0; j < gameState.length; j++) {
+            for (var j = 0; j < 4; j++) {
                 if (gameState[i][j] === null) {
-                    mes += "0";
+                    mes += "0 ";
                 }
                 else {
-                    mes += String(gameState[i][j]);
+                    mes += String(gameState[i][j]) + " ";
                 }
             }
             cl(mes);
+            cl("");
         }
     }
 }
