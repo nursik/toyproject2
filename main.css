@@ -6,6 +6,11 @@
     font-family: OswaldMedium;
     src: url(./fonts/oswald/Oswald-Medium.ttf)
 }
+@font-face {
+    font-family: OpenSans;
+    src: url(./fonts/opensans/opensans.ttf)
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -47,14 +52,30 @@ html, body {
     height: 480px;
     border-radius: 4px;
     background-color: #BBADA0;
+    position: relative;
 }
 
-.box {
+.base-box {
     display: inline-block;
     width: 100px;
     height: 100px;
     margin: 16px -4px -4px 16px;
     border-radius: 6px;
     background-color: #CDC1B4;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.upper-box {
+    position: absolute;
+    z-index: 2;
+    border-radius: 4px;
+    content: "";
+    
+    /* must be deleted */
+    background-color: indianred;
+    color: white; 
+    
+    font-family: OpenSans;
+    text-align: center;
+    line-height: 100px;
 }

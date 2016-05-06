@@ -10,12 +10,12 @@ function GameModelFabric() {
     var gameLost;
     
     this.init = function init() {
-        this.score = 0;
-        this.gameState = [[null, null, null, null],
-                          [null, null, null, null],
-                          [null, null, null, null],
-                          [null, null, null, null]];
-        this.gameLost = false;
+        score = 0;
+        gameState = [[null, null, null, null],
+                     [null, null, null, null],
+                     [null, null, null, null],
+                     [null, null, null, null]];
+        gameLost = false;
         this.addBlock();
         this.addBlock();
         return this;
@@ -32,12 +32,12 @@ function GameModelFabric() {
             var n = new_state.length;                         
             for (var i = 0; i < n; i++) {
                 for (var j = 0; j < n; j++) {
-                    new_state[i][j] = this.gameState[n - j - 1][i];
+                    new_state[i][j] = gameState[n - j - 1][i];
                 }
             }    
             for (var i = 0; i < n; i++) {
                 for (var j = 0; j < n; j++) {
-                    this.gameState[i][j] = new_state[i][j];
+                    gameState[i][j] = new_state[i][j];
                 }
             }                   
         }
@@ -62,11 +62,11 @@ function GameModelFabric() {
     function _getRandomNumber() {
         var rd = 0.0;
         for (var i = 1; i < 5; i++) {
-            if (this.score >= i * 100) {
+            if (score >= i * 100) {
                 rd = 0.1 * i;
             }
         }
-        if (this.score >= 500) {
+        if (score >= 500) {
             rd =  0.5;
         }
         if (Math.random() < rd) {
@@ -77,11 +77,11 @@ function GameModelFabric() {
     
     this.addBlock = function addBlock() {
         var places = [];
-        var n = this.gameState.length;
+        var n = gameState.length;
         
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
-                if (this.gameState[i][j] === null) {
+                if (gameState[i][j] === null) {
                     places.push([i, j]);
                 }
             }
@@ -97,17 +97,17 @@ function GameModelFabric() {
         var index = Number(Math.floor(Math.random() * n));
         var x = places[index][0];
         var y = places[index][1];
-        this.gameState[x][y] = num;
+        gameState[x][y] = num;
         
         return this;
     }
     
     this.isGameLost = function isGameLost() {
-        if (this.gameLost === false) {
+        if (gameLost === false) {
             var notLost = false;
             outer: for (var i = 0; i < 4; i++) {
                 for (var j = 0; j < 3; j++) {
-                    if (this.gameState[i][j] === this.gameState[i][j + 1]) {
+                    if (gameState[i][j] === gameState[i][j + 1]) {
                         notLost = true;
                         break outer;
                     }
@@ -115,32 +115,32 @@ function GameModelFabric() {
             }
             outer: for (var i = 0; i < 3; i++) {
                 for (var j = 0; j < 4; j++) {
-                    if (this.gameState[i][j] === this.gameState[i + 1][j]) {
+                    if (gameState[i][j] === gameState[i + 1][j]) {
                         notLost = true;
                         break outer;
                     }
                 }
             }
             if (notLost === false) {
-                this.gameLost = true;
+                gameLost = true;
             }
         }
-        return this.gameLost;
+        return gameLost;
     }
     
     this.getGameState = function getGameState() {
-        return this.gameState;
+        return gameState;
     }
     
     this.print = function print() {
-        for (var i = 0; i < this.gameState.length; i++) {
+        for (var i = 0; i < gameState.length; i++) {
             var mes = "";
-            for (var j = 0; j < this.gameState.length; j++) {
-                if (this.gameState[i][j] === null) {
+            for (var j = 0; j < gameState.length; j++) {
+                if (gameState[i][j] === null) {
                     mes += "0";
                 }
                 else {
-                    mes += String(this.gameState[i][j]);
+                    mes += String(gameState[i][j]);
                 }
             }
             cl(mes);
@@ -150,42 +150,85 @@ function GameModelFabric() {
 
 function UIModelFabric() {
     var gameBox;
+    var UITableBase;
     var UITable;
     var UIBlocked;
     
     this.init = function init(gameBoxEl) {
-        this.gameBox = gameBoxEl;
-        this.UITable = [[null, null, null, null],
+        gameBox = gameBoxEl;
+        UITableBase =  [[null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null]];
-        this.refreshUITable();
-        this.UIBlocked = false;
+        UITable =  [[null, null, null, null],
+                    [null, null, null, null],
+                    [null, null, null, null],
+                    [null, null, null, null]];   
+ 
+        this.setUITable();
+        UIBlocked = false;
         return this;
     }
     
-    this.refreshUITable = function refreshUITable() {
-        var boxes = this.gameBox.children;
+    this.setUITable = function setUITable() {
+        var boxes = gameBox.children;
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 4; j++) {
-                this.UITable[i][j] = boxes[i*4+j].getClientRects()[0];
+                UITableBase[i][j] = boxes[i*4+j];
             }
         }
         return this;
     }
     
+    function _getFontSize(num) {
+        if (num < 100) {
+            return 60;
+        }
+        if (num < 1000) {
+            return 48;
+        }
+        if (num < 10000) {
+            return 36;
+        }
+        return 24;
+    }
+    
+    this.addBlock = function addBlock(row, column, num) {
+        var el = document.createElement("div");
+        var base = UITableBase[row][column];
+        
+        el.id = "box" + row + "-" + column;
+        el.className = "upper-box";
+        el.innerText = num;
+        el.style.fontSize = _getFontSize(num) + "px";
+        el.style.width = base.offsetWidth + "px";
+        el.style.height = base.offsetHeight + "px";
+        el.style.top = base.offsetTop + "px";
+        el.style.left = base.offsetLeft + "px";
+        gameBox.appendChild(el);
+        
+        UITable[row][column] = el;
+        return el;
+    }
     this.g = function g() {
-        return this.UITable;
+        return UITableBase;
     }
 }
 
-var GameModel = new GameModelFabric();
+var GameModel;
 var UIModel;
 
 window.onload = function() {
     UIModel = new UIModelFabric();
-    UIModel.init(document.getElementById("gameBox"));
+    GameModel = new GameModelFabric();
     
+    GameModel.init();
+    UIModel.init(document.getElementById("gameBox"));
+    UIModel.addBlock(0, 0, 4);
+    UIModel.addBlock(0, 1, 16);
+    UIModel.addBlock(0, 2, 512);
+    UIModel.addBlock(0, 3, 4096);
+    UIModel.addBlock(1, 0, 65564);
 }
 
 
