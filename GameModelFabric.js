@@ -38,20 +38,95 @@ function GameModelFabric() {
         }
     }
     
+    function _turnTransitions(arr,numberOfRotations) {
+        for (var k = 0; k < numberOfRotations; k++) {
+            for (var i = 0; i < arr.length; i++) {
+                var temp = [null, null];
+                temp[0] = arr[i].src[1];
+                temp[1] = 3 - arr[i].src[0];
+                arr[i].src = temp.slice();
+                temp = [null, null];
+                temp[0] = arr[i].dst[1];
+                temp[1] = 3 - arr[i].dst[0];
+                arr[i].dst = temp.slice();
+            }
+        }
+    }
+    
     this.up = function up() {
-        return this;
+        var transitions = [];
+        for (var j = 0; j < 4; j++) {
+            for (var i = 0; i < 4; i++) {
+                if (gameState[i][j] === null) {
+                    continue;
+                }
+                var secondIndex = i + 1;
+                while (secondIndex < 3 && gameState[secondIndex][j] == null) {
+                    secondIndex++;
+                }
+                if (secondIndex < 4 && gameState[i][j] === gameState[secondIndex][j]) {
+                    score += gameState[i][j] * 2;
+                    var dstIndex = i;
+                    
+                    for (var k = 0; k < i; k++) {
+                        if (gameState[k][j] === null) {
+                            dstIndex = k;
+                            break;
+                        }
+                    }
+                    gameState[secondIndex][j] = null;                    
+                    gameState[dstIndex][j] = gameState[i][j] * 2;
+                    
+                    if (dstIndex !== i) {
+                        gameState[i][j] = null;                    
+                        transitions.push({"src": [i, j], "dst": [dstIndex, j]});
+                    }
+                    transitions.push({"src": [secondIndex, j], "dst": [dstIndex, j]});
+                    i = secondIndex + 1;
+                }
+                else {
+                    var dstIndex = i;
+                    
+                    while (dstIndex - 1 >= 0 && gameState[dstIndex - 1][j] === null) {
+                        dstIndex--;
+                    }
+                    gameState[dstIndex][j] = gameState[i][j];
+                    if (dstIndex !== i) {
+                        gameState[i][j] = null;                    
+                        transitions.push({"src": [i, j], "dst": [dstIndex, j]});
+                    }                    
+                }
+            }
+        }
+
+        return transitions;
     }
     
     this.down = function down() {
-        return this;
-    }
-    
-    this.left = function left() {
-        return this;
+        _turnModel.call(this, 2);
+        var transitions = this.up();
+        _turnModel.call(this, 2);
+        _turnTransitions.call(this, transitions, 2);
+
+        return transitions;
     }
     
     this.right = function right() {
-        return this;
+        _turnModel.call(this, 3);
+        var transitions = this.up();
+        _turnModel.call(this, 1);
+        _turnTransitions.call(this, transitions, 1);    
+            
+        return transitions;
+    }
+    
+    this.left = function left() {
+        _turnModel.call(this, 1);
+        var transitions = this.up();
+        _turnModel.call(this, 3);
+        _turnTransitions.call(this, transitions, 3);    
+            
+        return transitions;
     }
     
     function _getRandomNumber() {
@@ -128,6 +203,10 @@ function GameModelFabric() {
             copied.push(gameState[i].slice());
         }
         return copied;
+    }
+    
+    this.getScore = function getScore() {
+        return score;
     }
     
     this.print = function print() {
