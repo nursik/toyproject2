@@ -82,7 +82,7 @@ function GameModelFabric() {
                         transitions.push({"src": [i, j], "dst": [dstIndex, j]});
                     }
                     transitions.push({"src": [secondIndex, j], "dst": [dstIndex, j]});
-                    i = secondIndex + 1;
+                    i = secondIndex;
                 }
                 else {
                     var dstIndex = i;
