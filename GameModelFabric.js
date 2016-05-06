@@ -12,9 +12,6 @@ function GameModelFabric() {
                      [null, null, null, null],
                      [null, null, null, null]];
         gameLost = false;
-        this.addBlock();
-        this.addBlock();
-        return this;
     }
     
     function _turnModel(numberOfRotations) {
@@ -38,23 +35,31 @@ function GameModelFabric() {
         }
     }
     
-    function _turnTransitions(arr,numberOfRotations) {
+    function _turnTransitions(arr, numberOfRotations) {
         for (var k = 0; k < numberOfRotations; k++) {
-            for (var i = 0; i < arr.length; i++) {
+            for (var i = 0; i < arr.transitions.length; i++) {
                 var temp = [null, null];
-                temp[0] = arr[i].src[1];
-                temp[1] = 3 - arr[i].src[0];
-                arr[i].src = temp.slice();
+                temp[0] = arr.transitions[i].src[1];
+                temp[1] = 3 - arr.transitions[i].src[0];
+                arr.transitions[i].src = temp.slice();
                 temp = [null, null];
-                temp[0] = arr[i].dst[1];
-                temp[1] = 3 - arr[i].dst[0];
-                arr[i].dst = temp.slice();
+                temp[0] = arr.transitions[i].dst[1];
+                temp[1] = 3 - arr.transitions[i].dst[0];
+                arr.transitions[i].dst = temp.slice();
+            }
+        }
+        for (var k = 0; k < 4 - numberOfRotations; k++) {
+            for (var i = 0; i < arr.newBoxes.length; i++) {
+                var x = arr.newBoxes[i].x;
+                arr.newBoxes[i].x = arr.newBoxes[i].y;
+                arr.newBoxes[i].y = 3 - x;
             }
         }
     }
     
     this.up = function up() {
         var transitions = [];
+        var newBoxes = [];
         for (var j = 0; j < 4; j++) {
             for (var i = 0; i < 4; i++) {
                 if (gameState[i][j] === null) {
@@ -79,9 +84,10 @@ function GameModelFabric() {
                     
                     if (dstIndex !== i) {
                         gameState[i][j] = null;                    
-                        transitions.push({"src": [i, j], "dst": [dstIndex, j]});
+                        transitions.push({"src": [i, j], "dst": [dstIndex, j], "trm": true});
                     }
-                    transitions.push({"src": [secondIndex, j], "dst": [dstIndex, j]});
+                    transitions.push({"src": [secondIndex, j], "dst": [dstIndex, j], "trm": true});
+                    newBoxes.push({"x": j, "y": dstIndex, "num": gameState[dstIndex][j]});
                     i = secondIndex;
                 }
                 else {
@@ -93,13 +99,13 @@ function GameModelFabric() {
                     gameState[dstIndex][j] = gameState[i][j];
                     if (dstIndex !== i) {
                         gameState[i][j] = null;                    
-                        transitions.push({"src": [i, j], "dst": [dstIndex, j]});
+                        transitions.push({"src": [i, j], "dst": [dstIndex, j], "trm": false});
                     }                    
                 }
             }
         }
 
-        return transitions;
+        return {"transitions": transitions, "newBoxes": newBoxes};
     }
     
     this.down = function down() {
@@ -167,8 +173,7 @@ function GameModelFabric() {
         var x = places[index][0];
         var y = places[index][1];
         gameState[x][y] = num;
-        
-        return this;
+        return {"transitions":[], "newBoxes": [{"y": y, "x": x, "num": num}]};
     }
     
     this.isGameLost = function isGameLost() {
