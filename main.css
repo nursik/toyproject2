@@ -32,12 +32,20 @@ html, body {
 }
 
 .btn, .current-score, .best-score {
-    background-color: #bbada0;
+    
     font-family: OswaldMedium;
     color: #EFF;
     font-size: 18px;
     padding: 16px 24px;
     border-radius: 4px;
+}
+
+.btn {
+    background-color: #996c60;
+}
+
+.current-score, .best-score {
+    background-color: #bbada0;
 }
 
 .row:not(:last-child) {
@@ -53,6 +61,10 @@ html, body {
     border-radius: 4px;
     background-color: #BBADA0;
     position: relative;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
 }
 
 .base-box {
@@ -86,4 +98,45 @@ html, body {
     -webkit-transition: transform 0s ease-in;
     -moz-transition: transform 0s ease-in;
     transition: transform 0s ease-in;
+}
+
+.loss-box {
+    display: none;
+    position: absolute; 
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    z-index: 3; 
+    opacity: 0.8;
+    background-color: #bbada0;
+    font-size: 36px;
+    font-family: OswaldMedium;    
+}
+
+.loss-box span {
+    position: absolute;
+    width: 200px;
+    top: 45%;
+    left: 140px;
+    text-align: center;
+}
+
+
+.footer::before {
+    content: "2048 ";
+    text-align: center;
+    font-size: 36px;
+    font-family: OswaldMedium;
+    margin-top: 20px;
+    color: #995240;
+}
+.footer {
+    text-align: center;
+    font-size: 24px;
+    font-family: OswaldRegular;
+    color: #995240;    
+}
+.footer a {
+    color: #995240;    
+    
 }

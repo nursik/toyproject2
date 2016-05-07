@@ -1,12 +1,14 @@
 ;'use strict'
 
 function GameModelFabric() {
-    var gameState;
     var score;
+    var bestScore;
+    var gameState;
     var gameLost;
     
     this.init = function init() {
         score = 0;
+        bestScore = this.getBestScore();
         gameState = [[null, null, null, null],
                      [null, null, null, null],
                      [null, null, null, null],
@@ -58,6 +60,7 @@ function GameModelFabric() {
     // }
     
     this.up = function up() {
+        var wasMove = false;
         for (var j = 0; j < 4; j++) {
             for (var i = 0; i < 4; i++) {
                 if (gameState[i][j] === null) {
@@ -68,7 +71,7 @@ function GameModelFabric() {
                     secondIndex++;
                 }
                 if (secondIndex < 4 && gameState[i][j] === gameState[secondIndex][j]) {
-                    score += gameState[i][j] * 2;
+                    _addToScore.call(this, gameState[i][j] * 2);
                     var dstIndex = i;
                     
                     for (var k = 0; k < i; k++) {
@@ -79,9 +82,10 @@ function GameModelFabric() {
                     }
                     gameState[secondIndex][j] = null;                    
                     gameState[dstIndex][j] = gameState[i][j] * 2;
+                    wasMove = true; // change this  
                     
                     if (dstIndex !== i) {
-                        gameState[i][j] = null;                    
+                        gameState[i][j] = null;                  
                     }
                     i = secondIndex;
                 }
@@ -93,29 +97,34 @@ function GameModelFabric() {
                     }
                     gameState[dstIndex][j] = gameState[i][j];
                     if (dstIndex !== i) {
-                        gameState[i][j] = null;                    
+                        gameState[i][j] = null;      
+                        wasMove = true; // change this  
                     }                    
                 }
             }
         }
+        return wasMove;
     }
     
     this.down = function down() {
         _turnModel.call(this, 2);
         var transitions = this.up();
         _turnModel.call(this, 2);
+        return transitions;
     }
     
     this.right = function right() {
         _turnModel.call(this, 3);
         var transitions = this.up();
         _turnModel.call(this, 1);
+        return transitions;        
     }
     
     this.left = function left() {
         _turnModel.call(this, 1);
         var transitions = this.up();
         _turnModel.call(this, 3);
+        return transitions;        
     }
     
     function _getRandomNumber() {
@@ -162,28 +171,30 @@ function GameModelFabric() {
         if (gameLost === false) {
             var notLost = false;
             
-            outer: for (var i = 0; i < 4; i++) {
+            outer1: 
+            for (var i = 0; i < 4; i++) {
                 for (var j = 0; j < 4; j++) {
                     if (gameState[i][j] === null) {
                         notLost = true;
-                        break outer;
+                        break outer1;
                     }
                 }
             }
-            
-            outer: for (var i = 0; i < 4 && !notlost; i++) {
+            outer2: 
+            for (var i = 0; (i < 4) && (!notLost); i++) {
                 for (var j = 0; j < 3; j++) {
                     if (gameState[i][j] === gameState[i][j + 1]) {
                         notLost = true;
-                        break outer;
+                        break outer2;
                     }
                 }
             }
-            outer: for (var i = 0; i < 3 && !notlost; i++) {
+            outer3: 
+            for (var i = 0; (i < 3) && (!notLost); i++) {
                 for (var j = 0; j < 4; j++) {
                     if (gameState[i][j] === gameState[i + 1][j]) {
                         notLost = true;
-                        break outer;
+                        break outer3;
                     }
                 }
             }
@@ -202,11 +213,41 @@ function GameModelFabric() {
         return copied;
     }
     
+    function _addToScore(num) {
+        score += num;
+        if (score > bestScore) {
+            bestScore = score;
+        }
+    }
+    
+    this.updateLocalStorage = function updateLocalStorage() {
+        window.localStorage.setItem("Score", score.toString());
+        window.localStorage.setItem("BestScore", bestScore.toString());
+        window.localStorage.setItem("GameState", JSON.stringify(gameState));
+        window.localStorage.setItem("GameLost", gameLost.toString());
+    }
+    
+    this.getBestScore = function getBestScore() {
+        var localBestScore = 0;
+        if (window.localStorage.getItem("BestScore") === null) {
+            window.localStorage.setItem("BestScore", 0);
+        }
+        else {
+            localBestScore = window.localStorage.getItem("BestScore");
+        }
+        localBestScore = Number(localBestScore);
+        if (bestScore !== undefined && bestScore > localBestScore) {
+            localBestScore = bestScore;
+        }
+        return localBestScore;    
+    }
+    
     this.getScore = function getScore() {
         return score;
     }
     
     this.print = function print() {
+        // to delete
         for (var i = 0; i < 4; i++) {
             var mes = "";
             for (var j = 0; j < 4; j++) {

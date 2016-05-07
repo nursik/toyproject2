@@ -8,6 +8,7 @@ function UIModelFabric() {
     
     this.init = function init() {
         gameBox = document.getElementById("gameBox");
+        document.getElementsByClassName("loss-box")[0].style.display = "none";        
         UITableBase =  [[null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null],
@@ -17,15 +18,18 @@ function UIModelFabric() {
                 for (var j = 0; j < 4; j++) {
                     if (UITable[i][j] !== null) {
                         UITable[i][j].remove();
+                        UITable[i][j] = null;
                     }
                 }
             }
         }
-        UITable =  [[null, null, null, null],
-                    [null, null, null, null],
-                    [null, null, null, null],
-                    [null, null, null, null]];   
- 
+        else {
+             UITable = [[null, null, null, null],
+                        [null, null, null, null],
+                        [null, null, null, null],
+                        [null, null, null, null]];
+        }   
+        
         this.setUITableBase();
         UIBlocked = false;
     }
@@ -52,11 +56,27 @@ function UIModelFabric() {
         return 24;
     }
     
+    // function _getColors(num) {
+    //     var color = {
+    //         2:[,],
+    //         4:[,],
+    //         8:[,],
+    //         16:[,],
+    //         32:[,],
+    //         64:[,],
+    //         128:[,],
+    //         256:[,],
+    //         512:[,],
+    //         1024:[,],
+    //         2048:[,],
+    //         4096:[,],
+    //     }
+    // }
+    
     function _addBlock(row, column, num) {
         var el = document.createElement("div");
         var base = UITableBase[row][column];
         
-        el.id = "box" + row + "-" + column;
         el.className = "upper-box";
         el.innerText = num;
         el.style.fontSize = _getFontSize(num) + "px";
@@ -89,11 +109,11 @@ function UIModelFabric() {
     }
     
     this.updateCurrentScore = function updateCurrentScore(newScore) {
-        document.getElementsByClassName("current-score")[0].innerText = "Best: " + newScore;
+        document.getElementsByClassName("current-score")[0].innerText = "Score: " + newScore;
     }
     
     this.updateBestScore = function updateBestScore(newScore) {
-        document.getElementsByClassName("best-score")[0].innerText = "Score: " + newScore;
+        document.getElementsByClassName("best-score")[0].innerText = "Best: " + newScore;
     }
     
     this.isBlocked = function isBlocked() {
@@ -102,11 +122,10 @@ function UIModelFabric() {
     
     this.showLoss = function showLoss() {
         UIBlocked = true;
-        alert("LOST!");
+        document.getElementsByClassName("loss-box")[0].style.display = "block";
     }
     
     this.getUITable = function getUITable() {
-        // for delete
         return UITable;
     }
 }

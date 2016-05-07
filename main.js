@@ -10,78 +10,78 @@ function GameControllerFabric() {
     var UIModel;
 
     this.newGame = function newGame() {
-        UIModel = new UIModelFabric();
-        GameModel = new GameModelFabric();
+        if (UIModel === undefined) {
+            UIModel = new UIModelFabric();
+        }
+        if (GameModel === undefined) {
+            GameModel = new GameModelFabric();
+        }
         
-        GameModel.init();
         UIModel.init();
-        UIModel.applyTransitions(GameModel.addBlock());
-        UIModel.applyTransitions(GameModel.addBlock());    
+        GameModel.init();
+        GameModel.addBlock();
+        GameModel.addBlock();
+        UIModel.drawModel(GameModel.getGameState());    
+        UIModel.updateCurrentScore(GameModel.getScore());
+        UIModel.updateBestScore(GameModel.getBestScore());
     }
 
     this.up = function up() {
         if (UIModel.isBlocked()) {
             return;
         }
-        GameModel.up();
-        GameModel.addBlock();
-        UIMode
-        if (GameModel.isGameLost()) {
-            this.gameLost();
-        }
+        var wasMove = GameModel.up();
+        _afterMove.call(this, wasMove);
     }
+    
     this.down = function down() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var temp = GameModel.down();
-        cl(temp);
-        UIModel.applyTransitions(temp);
-        UIModel.applyTransitions(GameModel.addBlock());
-        if (GameModel.isGameLost()) {
-            this.gameLost();
-        }
+        var wasMove = GameModel.down();
+        _afterMove.call(this, wasMove);
     }
+    
     this.left = function left() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var temp = GameModel.left();
-        cl(temp);
-        UIModel.applyTransitions(temp);
-        UIModel.applyTransitions(GameModel.addBlock());
-        if (GameModel.isGameLost()) {
-            this.gameLost();
-        }
+        var wasMove = GameModel.left();
+        _afterMove.call(this, wasMove);
     }
+    
     this.right = function right() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var temp = GameModel.right();
-        cl(temp);
-        UIModel.applyTransitions(temp);
-        UIModel.applyTransitions(GameModel.addBlock());
-        if (GameModel.isGameLost()) {
-            this.gameLost();
-        }
-    }
-    this.gameLost = function gameLost() {
-        UIModel.showLoss();
+        var wasMove = GameModel.right();
+        _afterMove.call(this, wasMove);
     }
     
-    this.getUIModel = function getUIModel() {
-        return UIModel;
+    function _afterMove(wasMove) {
+        if (wasMove === true) {
+            GameModel.addBlock();
+        }
+        UIModel.drawModel(GameModel.getGameState());
+        UIModel.updateCurrentScore(GameModel.getScore());
+        UIModel.updateBestScore(GameModel.getBestScore());
+        if (GameModel.isGameLost()) {
+            this.showLoss();
+        }
+        GameModel.updateLocalStorage();
     }
-    this.getGameModel = function getGameModel() {
-        return GameModel;
+    
+    this.showLoss = function showLoss() {
+        UIModel.showLoss();
     }
 };
 
+
+var GameController = null;
+
 window.onload = function() {
-    var GameController = new GameControllerFabric();
+    GameController = new GameControllerFabric();
     GameController.newGame();
-    cl(GameController.getUIModel().getUITable());
     document.addEventListener("keyup", function(e) {
         var cd = e.keyCode || e.which;
         if (cd === 37) {
@@ -96,6 +96,9 @@ window.onload = function() {
         if (cd === 40) {
             GameController.down();
         }
+    });
+    document.getElementsByClassName("btn")[0].addEventListener("click", function(){
+       GameController.newGame(); 
     });
 }
 
