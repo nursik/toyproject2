@@ -161,7 +161,17 @@ function GameModelFabric() {
     this.isGameLost = function isGameLost() {
         if (gameLost === false) {
             var notLost = false;
+            
             outer: for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    if (gameState[i][j] === null) {
+                        notLost = true;
+                        break outer;
+                    }
+                }
+            }
+            
+            outer: for (var i = 0; i < 4 && !notlost; i++) {
                 for (var j = 0; j < 3; j++) {
                     if (gameState[i][j] === gameState[i][j + 1]) {
                         notLost = true;
@@ -169,7 +179,7 @@ function GameModelFabric() {
                     }
                 }
             }
-            outer: for (var i = 0; i < 3; i++) {
+            outer: for (var i = 0; i < 3 && !notlost; i++) {
                 for (var j = 0; j < 4; j++) {
                     if (gameState[i][j] === gameState[i + 1][j]) {
                         notLost = true;
