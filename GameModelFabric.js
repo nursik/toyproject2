@@ -173,7 +173,7 @@ function GameModelFabric() {
         var x = places[index][0];
         var y = places[index][1];
         gameState[x][y] = num;
-        return {"transitions":[], "newBoxes": [{"y": y, "x": x, "num": num}]};
+        return {"transitions":[], "newBoxes": [{"y": x, "x": y, "num": num}]};
     }
     
     this.isGameLost = function isGameLost() {

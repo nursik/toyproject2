@@ -70,11 +70,19 @@ function GameControllerFabric() {
     this.gameLost = function gameLost() {
         UIModel.showLoss();
     }
+    
+    this.getUIModel = function getUIModel() {
+        return UIModel;
+    }
+    this.getGameModel = function getGameModel() {
+        return GameModel;
+    }
 };
 
 window.onload = function() {
     var GameController = new GameControllerFabric();
     GameController.newGame();
+    cl(GameController.getUIModel().getUITable());
     document.addEventListener("keyup", function(e) {
         var cd = e.keyCode || e.which;
         if (cd === 37) {
