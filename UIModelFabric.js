@@ -28,7 +28,6 @@ function UIModelFabric() {
  
         this.setUITableBase();
         UIBlocked = false;
-        return this;
     }
     
     this.setUITableBase = function setUITableBase() {
@@ -38,7 +37,6 @@ function UIModelFabric() {
                 UITableBase[i][j] = boxes[i*4+j];
             }
         }
-        return this;
     }
     
     function _getFontSize(num) {
@@ -55,7 +53,6 @@ function UIModelFabric() {
     }
     
     function _addBlock(row, column, num) {
-        console.log(arguments);
         var el = document.createElement("div");
         var base = UITableBase[row][column];
         
@@ -69,59 +66,24 @@ function UIModelFabric() {
         el.style.left = base.offsetLeft + "px";
         
         gameBox.appendChild(el);
-        if (UITable[row][column] !== null) {
-            cl("BAD NEWS");
-        }
         UITable[row][column] = el;
-
-        setTimeout(function(){
-            el.style.width = base.offsetWidth + 10 + "px";
-            el.style.height = base.offsetHeight + 10 + "px";
-            el.style.top = base.offsetTop - 5 + "px";
-            el.style.left = base.offsetLeft - 5 + "px";
-        }, 150);
-        
-        setTimeout(function(){
-            el.style.width = base.offsetWidth + "px";
-            el.style.height = base.offsetHeight + "px";
-            el.style.top = base.offsetTop + "px";
-            el.style.left = base.offsetLeft + "px";
-        }, 300);
-        
-        return el;
     }
     
     function _moveBox(y_dst, x_dst, y_src, x_src, isDel) {
-        cl(arguments);
-        var box = UITable[y_src][x_src];
-        var baseBox = UITableBase[y_dst][x_dst];
-        cl(box);
-        box.addEventListener("transitionend", function(){
-            if (isDel) {
-                box.remove();
-            }
-            else {
-                UITable[y_dst][x_dst] = UITable[y_src][x_src];
-                cl("GOT IT!");
-                cl(UITable[y_dst][x_dst]);
-            }
-            UITable[y_src][x_src] = null;
-            cl("GOT IT2!");
-            cl(UITable[y_dst][x_dst]);
-        });
-        box.style.top = baseBox.offsetTop + "px";
-        box.style.left = baseBox.offsetLeft + "px";
     }
     
-    this.applyTransitions = function applyTransitions(transitions) {
+    this.drawModel = function drawModel(model) {
         UIBlocked = true;
-        for (var i = 0; i < transitions.newBoxes.length; i++) {
-            var el = transitions.newBoxes[i];
-            _addBlock.call(this, el.y, el.x, el.num);
-        }
-        for (var i = 0; i < transitions.transitions.length; i++) {
-            var el = transitions.transitions[i];
-            _moveBox.call(this, el.dst[0], el.dst[1], el.src[0], el.src[1], el.trm);
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                if (UITable[i][j] !== null) {
+                    UITable[i][j].remove();
+                    UITable[i][j] = null;
+                }
+                if (model[i][j] !== null) {
+                   _addBlock.call(this, i, j, model[i][j]);
+                }
+            }
         }
         UIBlocked = false;
     }

@@ -23,10 +23,9 @@ function GameControllerFabric() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var temp = GameModel.up();
-        cl(temp);
-        UIModel.applyTransitions(temp);
-        UIModel.applyTransitions(GameModel.addBlock());
+        GameModel.up();
+        GameModel.addBlock();
+        UIMode
         if (GameModel.isGameLost()) {
             this.gameLost();
         }
