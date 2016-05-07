@@ -8,6 +8,7 @@ function UIModelFabric() {
     
     this.init = function init() {
         gameBox = document.getElementById("gameBox");
+        document.getElementsByClassName("loss-box")[0].style.opacity = 0;        
         UITableBase =  [[null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null],
