@@ -101,16 +101,18 @@ html, body {
 }
 
 .loss-box {
-    display: none;
     position: absolute; 
     top: 0;
     width: 100%; 
     height: 100%; 
     z-index: 3; 
-    opacity: 0.8;
+    opacity: 0;
     background-color: #bbada0;
     font-size: 36px;
-    font-family: OswaldMedium;    
+    font-family: OswaldMedium;   
+    -webkit-transition: opacity 1s;
+    -moz-transition: opacity 1s;
+    transition: opacity 1s; 
 }
 
 .loss-box span {

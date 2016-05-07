@@ -8,7 +8,6 @@ function UIModelFabric() {
     
     this.init = function init() {
         gameBox = document.getElementById("gameBox");
-        document.getElementsByClassName("loss-box")[0].style.display = "none";        
         UITableBase =  [[null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null],
@@ -56,22 +55,26 @@ function UIModelFabric() {
         return 24;
     }
     
-    // function _getColors(num) {
-    //     var color = {
-    //         2:[,],
-    //         4:[,],
-    //         8:[,],
-    //         16:[,],
-    //         32:[,],
-    //         64:[,],
-    //         128:[,],
-    //         256:[,],
-    //         512:[,],
-    //         1024:[,],
-    //         2048:[,],
-    //         4096:[,],
-    //     }
-    // }
+    function _getColors(num) {
+        var color = {
+            2:["#FFDEC4", "#776E65"],
+            4:["#FFCEA8", "#776E65"],
+            8:["#ECAF80", "#F9F6F2"],
+            16:["#CF8A56", "#F9F6F2"],
+            32:["#F15B50", "#F9F6F2"],
+            64:["#FF4132", "#F9F6F2"],
+            128:["#FF2A1A", "#F9F6F2"],
+            256:["#EC1706", "#F9F6F2"],
+            512:["#AE0900", "#F9F6F2"],
+            1024:["#880C06", "#F9F6F2"],
+            2048:["#750600", "#F9F6F2"],
+            4096:["#6E0500", "#F9F6F2"],
+        }
+        if (num in color) {
+            return color[num];
+        }
+        return ["#DDDDDD", "#F9F6F2"];
+    }
     
     function _addBlock(row, column, num) {
         var el = document.createElement("div");
@@ -80,6 +83,8 @@ function UIModelFabric() {
         el.className = "upper-box";
         el.innerText = num;
         el.style.fontSize = _getFontSize(num) + "px";
+        el.style.backgroundColor = _getColors(num)[0];
+        el.style.color = _getColors(num)[1];
         el.style.width = base.offsetWidth + "px";
         el.style.height = base.offsetHeight + "px";
         el.style.top = base.offsetTop + "px";
@@ -122,7 +127,8 @@ function UIModelFabric() {
     
     this.showLoss = function showLoss() {
         UIBlocked = true;
-        document.getElementsByClassName("loss-box")[0].style.display = "block";
+        document.getElementsByClassName("loss-box")[0].style.opacity = 0.8;
+        
     }
     
     this.getUITable = function getUITable() {
