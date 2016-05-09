@@ -131,8 +131,4 @@ function UIModelFabric() {
         document.getElementsByClassName("loss-box")[0].style.opacity = 0.8;
         
     }
-    
-    this.getUITable = function getUITable() {
-        return UITable;
-    }
 }

@@ -14,6 +14,8 @@ function GameModelFabric() {
                      [null, null, null, null],
                      [null, null, null, null]];
         gameLost = false;
+        this.addBlock();
+        this.addBlock();
     }
     
     function _turnModel(numberOfRotations) {
@@ -103,7 +105,9 @@ function GameModelFabric() {
                 }
             }
         }
-        return wasMove;
+        if (wasMove) {
+            this.addBlock();
+        }
     }
     
     this.down = function down() {
@@ -157,7 +161,7 @@ function GameModelFabric() {
         var n = places.length;
         if (n === 0) {
             // no space for new block
-            return this;
+            return;
         }
         
         var num = _getRandomNumber.call(this);
@@ -238,6 +242,7 @@ function GameModelFabric() {
         localBestScore = Number(localBestScore);
         if (bestScore !== undefined && bestScore > localBestScore) {
             localBestScore = bestScore;
+            window.localStorage.setItem("BestScore", localBestScore);
         }
         return localBestScore;    
     }

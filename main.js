@@ -19,8 +19,6 @@ function GameControllerFabric() {
         
         UIModel.init();
         GameModel.init();
-        GameModel.addBlock();
-        GameModel.addBlock();
         UIModel.drawModel(GameModel.getGameState());    
         UIModel.updateCurrentScore(GameModel.getScore());
         UIModel.updateBestScore(GameModel.getBestScore());
@@ -30,38 +28,35 @@ function GameControllerFabric() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var wasMove = GameModel.up();
-        _afterMove.call(this, wasMove);
+        GameModel.up();
+        _afterMove.call(this);
     }
     
     this.down = function down() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var wasMove = GameModel.down();
-        _afterMove.call(this, wasMove);
+        GameModel.down();
+        _afterMove.call(this);
     }
     
     this.left = function left() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var wasMove = GameModel.left();
-        _afterMove.call(this, wasMove);
+        GameModel.left();
+        _afterMove.call(this);
     }
     
     this.right = function right() {
         if (UIModel.isBlocked()) {
             return;
         }
-        var wasMove = GameModel.right();
-        _afterMove.call(this, wasMove);
+        GameModel.right();
+        _afterMove.call(this);
     }
     
-    function _afterMove(wasMove) {
-        if (wasMove === true) {
-            GameModel.addBlock();
-        }
+    function _afterMove() {
         UIModel.drawModel(GameModel.getGameState());
         UIModel.updateCurrentScore(GameModel.getScore());
         UIModel.updateBestScore(GameModel.getBestScore());
