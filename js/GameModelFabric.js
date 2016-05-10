@@ -68,20 +68,24 @@ function GameModelFabric() {
                 if (gameState[i][j] === null) {
                     continue;
                 }
+
                 var secondIndex = i + 1;
                 while (secondIndex < 3 && gameState[secondIndex][j] == null) {
                     secondIndex++;
                 }
-                if (secondIndex < 4 && gameState[i][j] === gameState[secondIndex][j]) {
-                    _addToScore.call(this, gameState[i][j] * 2);
+
+                if (secondIndex < 4 && gameState[i][j] === gameState[secondIndex][j]) { // if there are two boxes, which can be merged together
+                    score += gameState[i][j] * 2;
+                    if (score > bestScore) {
+                        bestScore = score;
+                    }
+                    
                     var dstIndex = i;
                     
-                    for (var k = 0; k < i; k++) {
-                        if (gameState[k][j] === null) {
-                            dstIndex = k;
-                            break;
-                        }
+                    while (dstIndex - 1 >= 0 && gameState[dstIndex] === null) {
+                        dstIndex--;
                     }
+                    
                     gameState[secondIndex][j] = null;                    
                     gameState[dstIndex][j] = gameState[i][j] * 2;
                     wasMove = true; // change this  
@@ -215,13 +219,6 @@ function GameModelFabric() {
             copied.push(gameState[i].slice());
         }
         return copied;
-    }
-    
-    function _addToScore(num) {
-        score += num;
-        if (score > bestScore) {
-            bestScore = score;
-        }
     }
     
     this.updateLocalStorage = function updateLocalStorage() {
