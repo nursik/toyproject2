@@ -112,7 +112,7 @@ function UIModelFabric() {
         UIBlocked = false;
     }
     
-    this.drawScores = function drawCurrentScore(currentScore, bestScore) {
+    this.drawScores = function drawScores(currentScore, bestScore) {
         document.getElementsByClassName("current-score")[0].innerText = "Score: " + currentScore;
         document.getElementsByClassName("best-score")[0].innerText = "Best: " + bestScore;
     }
