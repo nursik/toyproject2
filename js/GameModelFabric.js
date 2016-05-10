@@ -14,8 +14,8 @@ function GameModelFabric() {
                      [null, null, null, null],
                      [null, null, null, null]];
         gameLost = false;
-        this.addBlock();
-        this.addBlock();
+        _addBlock.call(this);
+        _addBlock.call(this);
     }
     
     function _turnModel(numberOfRotations) {
@@ -106,7 +106,7 @@ function GameModelFabric() {
             }
         }
         if (wasMove) {
-            this.addBlock();
+            _addBlock.call(this);
         }
     }
     
@@ -147,7 +147,7 @@ function GameModelFabric() {
         return 2;
     }
     
-    this.addBlock = function addBlock() {
+    function _addBlock() {
         var places = [];
         
         for (var i = 0; i < 4; i++) {
