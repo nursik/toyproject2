@@ -40,7 +40,7 @@ function GameControllerFabric() {
     
     function _afterMove() {
         UIModel.drawModel(GameModel.getGameState());
-        UIModel.drawScores();
+        UIModel.drawScores(GameModel.getCurrentScore(), GameModel.getBestScore());
         if (GameModel.isGameLost()) {
             this.showLoss();
         }
