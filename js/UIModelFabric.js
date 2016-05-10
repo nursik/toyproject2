@@ -13,6 +13,8 @@ function UIModelFabric() {
                         [null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null]];
+        UIBlocked = false;
+                                
         if (UITable !== undefined) {
             for (var i = 0; i < 4; i++) {
                 for (var j = 0; j < 4; j++) {
@@ -30,17 +32,13 @@ function UIModelFabric() {
                         [null, null, null, null]];
         }   
         
-        this.setUITableBase();
-        UIBlocked = false;
-    }
-    
-    this.setUITableBase = function setUITableBase() {
         var boxes = gameBox.children;
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 4; j++) {
                 UITableBase[i][j] = boxes[i*4+j];
             }
         }
+        
     }
     
     function _getFontSize(num) {
@@ -114,12 +112,9 @@ function UIModelFabric() {
         UIBlocked = false;
     }
     
-    this.updateCurrentScore = function updateCurrentScore(newScore) {
-        document.getElementsByClassName("current-score")[0].innerText = "Score: " + newScore;
-    }
-    
-    this.updateBestScore = function updateBestScore(newScore) {
-        document.getElementsByClassName("best-score")[0].innerText = "Best: " + newScore;
+    this.drawScores = function drawCurrentScore(currentScore, bestScore) {
+        document.getElementsByClassName("current-score")[0].innerText = "Score: " + currentScore;
+        document.getElementsByClassName("best-score")[0].innerText = "Best: " + bestScore;
     }
     
     this.isBlocked = function isBlocked() {
@@ -128,7 +123,6 @@ function UIModelFabric() {
     
     this.showLoss = function showLoss() {
         UIBlocked = true;
-        document.getElementsByClassName("loss-box")[0].style.opacity = 0.8;
-        
+        document.getElementsByClassName("loss-box")[0].style.opacity = 0.8;   
     }
 }
