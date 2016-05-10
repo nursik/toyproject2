@@ -247,7 +247,7 @@ function GameModelFabric() {
         return localBestScore;    
     }
     
-    this.getScore = function getScore() {
+    this.getCurrentScore = function getCurrentScore() {
         return score;
     }
     
