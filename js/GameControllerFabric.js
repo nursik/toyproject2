@@ -40,7 +40,6 @@ function GameControllerFabric() {
     
     function _afterMove() {
         UIModel.drawTransitions(GameModel.getTransitions());
-        GameModel.print();
         UIModel.drawScores(GameModel.getCurrentScore(), GameModel.getBestScore());
         if (GameModel.isGameLost()) {
             this.showLoss();

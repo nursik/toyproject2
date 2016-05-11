@@ -92,8 +92,8 @@ function UIModelFabric() {
 
         gameBox.appendChild(el);
         
-        setTimeout(function(){el.style.transform = "scale(1.1)"}, 150);
-        setTimeout(function(){el.style.transform = "scale(1.0)"}, 300);
+        setTimeout(function(){el.style.transform = "scale(1.1)"}, 100);
+        setTimeout(function(){el.style.transform = "scale(1.0)"}, 200);
         UITable[row][column] = el;
         UIBlocked--;        
     }
@@ -139,7 +139,7 @@ function UIModelFabric() {
                     _addBlock(obj[0], obj[1], obj[2]);
                 }
             }
-        }, 150);
+        }, 100);
         
         // transitions = [];
         setTimeout(function(){
@@ -147,7 +147,7 @@ function UIModelFabric() {
                 transitions.pop();
             }
             UIBlocked--;
-        }, 300);
+        }, 200);
         
     }
     

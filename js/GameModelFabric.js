@@ -83,10 +83,10 @@ function GameModelFabric() {
                     
                     var dstIndex = i;
                     
-                    while (dstIndex - 1 >= 0 && gameState[dstIndex - 1] === null) {
+                    while (dstIndex - 1 >= 0 && gameState[dstIndex - 1][j] === null) {
                         dstIndex--;
                     }
-                    
+
                     gameState[secondIndex][j] = null;                    
                     gameState[dstIndex][j] = gameState[i][j] * 2;
                     

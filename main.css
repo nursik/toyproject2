@@ -87,9 +87,9 @@ html, body {
     text-align: center;
     line-height: 100px;
     
-    -webkit-transition: all 0.15s ease-in;
-    -moz-transition: all 0.15s ease-in;
-    transition: all 0.15s ease-in;
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
 }
 
 .loss-box {
