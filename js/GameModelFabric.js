@@ -5,6 +5,7 @@ function GameModelFabric() {
     var bestScore;
     var gameState;
     var gameLost;
+    var transitions;
     
     this.init = function init() {
         score = 0;
@@ -14,6 +15,7 @@ function GameModelFabric() {
                      [null, null, null, null],
                      [null, null, null, null]];
         gameLost = false;
+        transitions = [];
         _addBlock.call(this);
         _addBlock.call(this);
     }
@@ -39,27 +41,26 @@ function GameModelFabric() {
         }
     }
     
-    // function _turnTransitions(arr, numberOfRotations) {
-    //     for (var k = 0; k < numberOfRotations; k++) {
-    //         for (var i = 0; i < arr.transitions.length; i++) {
-    //             var temp = [null, null];
-    //             temp[0] = arr.transitions[i].src[1];
-    //             temp[1] = 3 - arr.transitions[i].src[0];
-    //             arr.transitions[i].src = temp.slice();
-    //             temp = [null, null];
-    //             temp[0] = arr.transitions[i].dst[1];
-    //             temp[1] = 3 - arr.transitions[i].dst[0];
-    //             arr.transitions[i].dst = temp.slice();
-    //         }
-    //     }
-    //     for (var k = 0; k < 4 - numberOfRotations; k++) {
-    //         for (var i = 0; i < arr.newBoxes.length; i++) {
-    //             var x = arr.newBoxes[i].x;
-    //             arr.newBoxes[i].x = arr.newBoxes[i].y;
-    //             arr.newBoxes[i].y = 3 - x;
-    //         }
-    //     }
-    // }
+    // turns 2-length array clockwise;
+    function _turnPair(arr) {
+        return [arr[1], 3 - arr[0]];
+    }
+	
+	function _turnTransitions(num) {
+		for (var k = 0; k < num; k++) {
+			for (var i = 0; i < transitions.length; i++) {
+				if ("new" in transitions[i]) {
+					var temp = _turnPair(transitions[i]["new"]);
+					transitions[i]["new"][0] = temp[0];	
+					transitions[i]["new"][1] = temp[1];	
+				}
+				else {
+					transitions[i].a = _turnPair(transitions[i].a);
+					transitions[i].b = _turnPair(transitions[i].b);					
+				}
+			}
+		}
+	}
     
     this.up = function up() {
         var wasMove = false;
@@ -82,14 +83,30 @@ function GameModelFabric() {
                     
                     var dstIndex = i;
                     
-                    while (dstIndex - 1 >= 0 && gameState[dstIndex] === null) {
+                    while (dstIndex - 1 >= 0 && gameState[dstIndex - 1] === null) {
                         dstIndex--;
                     }
                     
                     gameState[secondIndex][j] = null;                    
                     gameState[dstIndex][j] = gameState[i][j] * 2;
-                    wasMove = true; // change this  
                     
+					wasMove = true;  
+					transitions.push({
+						"a": [secondIndex, j],
+						"b": [dstIndex, j],
+						"del": true,
+					});
+					
+					transitions.push({
+						"a": [i, j],
+						"b": [dstIndex, j],
+						"del": true,
+					});
+					
+					transitions.push({
+						"new": [dstIndex, j, gameState[dstIndex][j]],
+					});
+					
                     if (dstIndex !== i) {
                         gameState[i][j] = null;                  
                     }
@@ -104,7 +121,12 @@ function GameModelFabric() {
                     gameState[dstIndex][j] = gameState[i][j];
                     if (dstIndex !== i) {
                         gameState[i][j] = null;      
-                        wasMove = true; // change this  
+                        wasMove = true;
+						transitions.push({
+							"a": [i, j],
+							"b": [dstIndex, j],
+							"del": false,
+						});  
                     }                    
                 }
             }
@@ -116,23 +138,23 @@ function GameModelFabric() {
     
     this.down = function down() {
         _turnModel.call(this, 2);
-        var transitions = this.up();
+        this.up();
         _turnModel.call(this, 2);
-        return transitions;
+		_turnTransitions.call(this, 2);
     }
     
     this.right = function right() {
         _turnModel.call(this, 3);
-        var transitions = this.up();
+        this.up();
         _turnModel.call(this, 1);
-        return transitions;        
+		_turnTransitions.call(this, 1);
     }
     
     this.left = function left() {
         _turnModel.call(this, 1);
-        var transitions = this.up();
+        this.up();
         _turnModel.call(this, 3);
-        return transitions;        
+		_turnTransitions.call(this, 3);
     }
     
     function _getRandomNumber() {
@@ -170,9 +192,12 @@ function GameModelFabric() {
         
         var num = _getRandomNumber.call(this);
         var index = Number(Math.floor(Math.random() * n));
-        var x = places[index][0];
-        var y = places[index][1];
-        gameState[x][y] = num;
+        var y = places[index][0];
+        var x = places[index][1];
+        gameState[y][x] = num;
+		transitions.push({
+			"new": [y, x, num],
+		});
     }
     
     this.isGameLost = function isGameLost() {
@@ -248,20 +273,23 @@ function GameModelFabric() {
         return score;
     }
     
+	this.getTransitions = function getTransitions() {
+		return transitions;
+	}
+    
     this.print = function print() {
         // to delete
         for (var i = 0; i < 4; i++) {
-            var mes = "";
+            var mes = i + ":";
             for (var j = 0; j < 4; j++) {
                 if (gameState[i][j] === null) {
-                    mes += "0 ";
+                    mes += "0";
                 }
                 else {
-                    mes += String(gameState[i][j]) + " ";
+                    mes += String(gameState[i][j]);
                 }
             }
             cl(mes);
-            cl("");
         }
     }
 }

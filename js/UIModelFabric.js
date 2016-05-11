@@ -13,7 +13,7 @@ function UIModelFabric() {
                         [null, null, null, null],
                         [null, null, null, null],
                         [null, null, null, null]];
-        UIBlocked = false;
+        UIBlocked = 0;
                                 
         if (UITable !== undefined) {
             for (var i = 0; i < 4; i++) {
@@ -76,6 +76,7 @@ function UIModelFabric() {
     }
     
     function _addBlock(row, column, num) {
+        UIBlocked++;
         var el = document.createElement("div");
         var base = UITableBase[row][column];
         
@@ -88,28 +89,66 @@ function UIModelFabric() {
         el.style.height = base.offsetHeight + "px";
         el.style.top = base.offsetTop + "px";
         el.style.left = base.offsetLeft + "px";
-        
+
         gameBox.appendChild(el);
+        
+        setTimeout(function(){el.style.transform = "scale(1.1)"}, 150);
+        setTimeout(function(){el.style.transform = "scale(1.0)"}, 300);
         UITable[row][column] = el;
+        UIBlocked--;        
     }
     
-    function _moveBox(y_dst, x_dst, y_src, x_src, isDel) {
-    }
     
-    this.drawModel = function drawModel(model) {
-        UIBlocked = true;
-        for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < 4; j++) {
-                if (UITable[i][j] !== null) {
-                    UITable[i][j].remove();
-                    UITable[i][j] = null;
-                }
-                if (model[i][j] !== null) {
-                   _addBlock.call(this, i, j, model[i][j]);
-                }
+    this.drawTransitions = function drawTransitions(transitions) {
+        UIBlocked++;
+        var arrayRemove = [];
+        for (var i = 0; i < transitions.length; i++) {
+            var obj = transitions[i];
+            if (!("new" in obj) && (obj.del === true)) {
+                var el = UITable[obj.a[0]][obj.a[1]];
+                var base = UITableBase[obj.b[0]][obj.b[1]];
+               
+                el.style.top = base.offsetTop + "px";
+                el.style.left = base.offsetLeft + "px";
+                arrayRemove.push(el);
+                UITable[obj.a[0]][obj.a[1]] = null;
             }
         }
-        UIBlocked = false;
+        
+        for (var i = 0; i < transitions.length; i++) {
+            var obj = transitions[i];
+            if (!("new" in obj) && (obj.del === false)) {
+                var el = UITable[obj.a[0]][obj.a[1]];
+                var base = UITableBase[obj.b[0]][obj.b[1]];
+                
+                el.style.top = base.offsetTop + "px";
+                el.style.left = base.offsetLeft + "px";
+                
+                UITable[obj.a[0]][obj.a[1]] = null;
+                UITable[obj.b[0]][obj.b[1]] = el;                                
+            }
+        }
+        
+        setTimeout(function(){ 
+            for (var i = 0; i < arrayRemove.length; i++) {
+                arrayRemove[i].remove();
+            }
+            for (var i = 0; i < transitions.length; i++) {
+                if ("new" in transitions[i]) {
+                    obj = transitions[i]["new"];
+                    _addBlock(obj[0], obj[1], obj[2]);
+                }
+            }
+        }, 150);
+        
+        // transitions = [];
+        setTimeout(function(){
+            while(transitions.length > 0) {
+                transitions.pop();
+            }
+            UIBlocked--;
+        }, 300);
+        
     }
     
     this.drawScores = function drawScores(currentScore, bestScore) {
@@ -122,7 +161,23 @@ function UIModelFabric() {
     }
     
     this.showLoss = function showLoss() {
-        UIBlocked = true;
+        UIBlocked++;
         document.getElementsByClassName("loss-box")[0].style.opacity = 0.8;   
+    }
+    function _printUIModel() {
+        for (var i = 0; i < 4; i++) {
+            var mes = i + ": ";
+            for (var j = 0; j < 4; j++) {
+                var el = UITable[i][j];
+                if (el === null) {
+                    mes += "0";
+                }
+                else {
+                    mes += UITable[i][j].innerText;
+                }
+            }
+            cl(mes);
+        }
+        cl("");
     }
 }

@@ -12,13 +12,13 @@ function GameControllerFabric() {
             GameModel = new GameModelFabric();
         }
         
-        UIModel.init();
         GameModel.init();
+        UIModel.init();
         _afterMove.call(this);
     }
 
     this.move = function move(code) {
-        if (UIModel.isBlocked()) {
+        if (UIModel.isBlocked() > 0) {
             return;
         }
         switch(code) {
@@ -39,7 +39,8 @@ function GameControllerFabric() {
     }
     
     function _afterMove() {
-        UIModel.drawModel(GameModel.getGameState());
+        UIModel.drawTransitions(GameModel.getTransitions());
+        GameModel.print();
         UIModel.drawScores(GameModel.getCurrentScore(), GameModel.getBestScore());
         if (GameModel.isGameLost()) {
             this.showLoss();
